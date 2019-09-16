@@ -143,7 +143,7 @@ Result usbEnable(void)
     return rc;
 }
 
-Result usbInterfaceInit(u32 intf_ind, struct usb_interface_descriptor *interface_descriptor)
+Result usbInterfaceInit(u32 intf_ind, struct usb_interface_descriptor *interface_descriptor, struct usb_interface_association_descriptor *interface_association_descriptor)
 {
     //TODO: protect against null pointer inputs
     Result rc = 0;
@@ -179,12 +179,18 @@ Result usbInterfaceInit(u32 intf_ind, struct usb_interface_descriptor *interface
         }
 
         // Full Speed Config
+        if (interface_association_descriptor != NULL && R_SUCCEEDED(rc))
+            rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_Full, interface_association_descriptor, interface_association_descriptor->bLength);
         if (R_SUCCEEDED(rc)) rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_Full, interface_descriptor, USB_DT_INTERFACE_SIZE);
 
         // High Speed Config
+        if (interface_association_descriptor != NULL && R_SUCCEEDED(rc))
+            rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_High, interface_association_descriptor, interface_association_descriptor->bLength);
         if (R_SUCCEEDED(rc)) rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_High, interface_descriptor, USB_DT_INTERFACE_SIZE);
 
         // Super Speed Config
+        if (interface_association_descriptor != NULL && R_SUCCEEDED(rc))
+            rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_Super, interface_association_descriptor, interface_association_descriptor->bLength);
         if (R_SUCCEEDED(rc)) rc = usbDsInterface_AppendConfigurationData(interface->interface, UsbDeviceSpeed_Super, interface_descriptor, USB_DT_INTERFACE_SIZE);
 
         if (R_SUCCEEDED(rc))

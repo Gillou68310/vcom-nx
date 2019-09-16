@@ -60,6 +60,16 @@ struct line_coding {
 
 class USBCDCComInterface : public USBInterface {
 private:
+    struct usb_interface_association_descriptor interface_association_descriptor = {
+        .bLength = 0x08,
+        .bDescriptorType = 0x0B,
+        .bFirstInterface = 0x00,
+        .bInterfaceCount = 0x02,
+        .bFunctionClass = 0x02,
+        .bFunctionSubClass = 0x02,
+        .bFunctionProtocol = 0x01,
+        .iFunction = 0x08,
+    };
     struct usb_interface_descriptor interface_descriptor = {
         .bLength = USB_DT_INTERFACE_SIZE,
         .bDescriptorType = USB_DT_INTERFACE,

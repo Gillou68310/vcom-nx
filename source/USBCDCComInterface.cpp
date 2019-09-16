@@ -39,6 +39,7 @@ static const char *stop_bits_str[] = {"1","1.5","2"};
 
 USBCDCComInterface::USBCDCComInterface(int index, USBCDCDataInterface *cdc_data_interface) : USBInterface(index)
 {
+    interface_association_descriptor.bFirstInterface = interface_index;
     cdc_com_call_mgmt.bDataInterface = cdc_data_interface->getInterfaceIndex();
     cdc_com_union.bControlInterface = interface_index;
     cdc_com_union.bSubordinateInterface0 = cdc_data_interface->getInterfaceIndex();
@@ -49,8 +50,9 @@ USBCDCComInterface::~USBCDCComInterface() {
 
 Result USBCDCComInterface::initialize()
 {
-    Result rc = usbAddStringDescriptor(&interface_descriptor.iInterface, "CDC Abstract Control Model (ACM)");
-    if (R_SUCCEEDED(rc)) rc = usbInterfaceInit(interface_index, &interface_descriptor);
+    Result rc = usbAddStringDescriptor(&interface_association_descriptor.iFunction, "CDC Serial");
+    if (R_SUCCEEDED(rc)) rc = usbAddStringDescriptor(&interface_descriptor.iInterface, "CDC Abstract Control Model (ACM)");
+    if (R_SUCCEEDED(rc)) rc = usbInterfaceInit(interface_index, &interface_descriptor, &interface_association_descriptor);
     if (R_SUCCEEDED(rc)) rc = usbInterfaceAddData(interface_index, (char*)&cdc_com_header);
     if (R_SUCCEEDED(rc)) rc = usbInterfaceAddData(interface_index, (char*)&cdc_com_call_mgmt);
     if (R_SUCCEEDED(rc)) rc = usbInterfaceAddData(interface_index, (char*)&cdc_com_acm);

@@ -32,7 +32,7 @@ USBCDCDataInterface::~USBCDCDataInterface() {
 Result USBCDCDataInterface::initialize()
 {
     Result rc = usbAddStringDescriptor(&interface_descriptor.iInterface, "CDC ACM Data");
-    if (R_SUCCEEDED(rc)) rc = usbInterfaceInit(interface_index, &interface_descriptor);
+    if (R_SUCCEEDED(rc)) rc = usbInterfaceInit(interface_index, &interface_descriptor, NULL);
     if (R_SUCCEEDED(rc)) rc = usbAddEndpoint(interface_index, EP_IN, &endpoint_descriptor_in);
     if (R_SUCCEEDED(rc)) rc = usbAddEndpoint(interface_index, EP_OUT, &endpoint_descriptor_out);
     if (R_SUCCEEDED(rc)) rc = usbEnableInterface(interface_index);
