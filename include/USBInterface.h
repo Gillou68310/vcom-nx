@@ -21,7 +21,7 @@
 #include "usb.h"
 
 class USBInterface {
-protected:
+private:
     static USBInterface *interfaces[TOTAL_INTERFACES];
     int interface_index;
 
@@ -31,7 +31,7 @@ public:
         interface_index = index;
         interfaces[index] = this;
     }
-    virtual Result initialize() = 0;
+    virtual Result initialize(const char* str) = 0;
     int getInterfaceIndex(void) {return interface_index;}
     static USBInterface * getInterface(int index)
     {

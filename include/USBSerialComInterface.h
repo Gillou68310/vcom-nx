@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef __USB_CDC_COM_INTERFACE_H
-#define __USB_CDC_COM_INTERFACE_H
+#ifndef __USB_SERIAL_COM_INTERFACE_H
+#define __USB_SERIAL_COM_INTERFACE_H
 
-#include <LoggerCpp/LoggerCpp.h>
+#include <mutex>
+#include "Logger.h"
 #include "USBInterface.h"
-#include "USBCDCDataInterface.h"
+#include "USBSerialDataInterface.h"
 
 struct usb_cdc_header {
     uint8_t  bFunctionLength;
@@ -58,7 +59,7 @@ struct line_coding {
 	uint8_t bDataBits;
 } PACKED;
 
-class USBCDCComInterface : public USBInterface {
+class USBSerialComInterface : public USBInterface {
 private:
     struct usb_interface_association_descriptor interface_association_descriptor = {
         .bLength = 0x08,
@@ -123,17 +124,17 @@ private:
     bool Carrier = false;
     
 public:
-            USBCDCComInterface(int index, USBCDCDataInterface *cdc_data_interface);
-    virtual ~USBCDCComInterface();
+            USBSerialComInterface(int index, USBSerialDataInterface *cdc_data_interface);
+    virtual ~USBSerialComInterface();
     
-    Result initialize();
-    ssize_t sendEvent(const char *ptr, size_t len);
+    Result initialize(const char* str);
+    ssize_t sendEvent(const char *ptr, size_t len, u64 timestamp);
     struct line_coding * getLineCoding() {return &coding;}
     bool getDTE() {return DTE;}
     void setDTE(bool b) {DTE = b;}
     bool getCarrier() {return Carrier;}
     void setCarrier(bool b) {Carrier = b;}
-    static void handle_setup_packet(Log::Logger *logger, bool *quit);
+    static void handle_setup_packet(bool *quit);
 };
 
-#endif /* __USB_CDC_COM_INTERFACE_H */
+#endif /* __USB_SERIAL_COM_INTERFACE_H */

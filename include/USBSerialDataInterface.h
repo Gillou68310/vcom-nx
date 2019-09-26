@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef __USB_CDC_DATA_INTERFACE_H
-#define __USB_CDC_DATA_INTERFACE_H
+#ifndef __USB_SERIAL_DATA_INTERFACE_H
+#define __USB_SERIAL_DATA_INTERFACE_H
 
-#include <LoggerCpp/LoggerCpp.h>
+#include "Logger.h"
 #include "USBInterface.h"
 
-class USBCDCDataInterface : public USBInterface {
+class USBSerialDataInterface : public USBInterface {
 private:
     struct usb_interface_descriptor interface_descriptor = {
         .bLength = USB_DT_INTERFACE_SIZE,
@@ -48,13 +48,12 @@ private:
     };
     
 public:
-            USBCDCDataInterface(int index);
-    virtual ~USBCDCDataInterface();
+            USBSerialDataInterface(int index);
+    virtual ~USBSerialDataInterface();
 
-    Result initialize();
-    ssize_t read(char *ptr, size_t len);
-    ssize_t write(const char *ptr, size_t len);
-    static void handle_input_packet(int data_interface_index, int com_interface_index, Log::Logger *logger, bool *quit);
+    Result initialize(const char* str);
+    ssize_t read(char *ptr, size_t len, u64 timestamp);
+    ssize_t write(const char *ptr, size_t len, u64 timestamp);
 };
 
-#endif /* __USB_CDC_DATA_INTERFACE_H */
+#endif /* __USB_SERIAL_DATA_INTERFACE_H */
